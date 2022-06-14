@@ -55,7 +55,7 @@ python train_news.py \
 ## Attributions
 
 Later on, when the attributions are evaluated, the evaluation script relies on <b>cased</b> or <b>uncased</b> being present in the directory name
-in order to correctly merge the tokenized text into words. Keep this in mind, as otherwise the script will crash.
+in order to correctly merge the tokenized text into words. The medium, small and mini models are all uncased. Keep this in mind, as otherwise the script will crash. 
 
 ### SST
 
