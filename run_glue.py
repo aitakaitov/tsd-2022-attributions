@@ -281,7 +281,7 @@ def main():
 
         if data_args.train_file.endswith(".csv"):
             # Loading a dataset from local csv files
-            raw_datasets = load_dataset("csv", data_files=data_files, cache_dir=model_args.cache_dir, delimiter='~')
+            raw_datasets = load_dataset("csv", data_files=data_files, cache_dir=model_args.cache_dir, delimiter='\t')
         else:
             # Loading a dataset from local json files
             raw_datasets = load_dataset("json", data_files=data_files, cache_dir=model_args.cache_dir)
