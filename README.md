@@ -138,10 +138,10 @@ For SST, we have used the following pretrained models from HuggingFace:
 * [prajjwal1/bert-mini](https://huggingface.co/prajjwal1/bert-mini)
 
 Our trained versions are:
-* [bert-base-cased](https://huggingface.co/bert-base-cased)
-* [prajjwal1/bert-medium](https://huggingface.co/prajjwal1/bert-medium)
-* [prajjwal1/bert-small](https://huggingface.co/prajjwal1/bert-small)
-* [prajjwal1/bert-mini](https://huggingface.co/prajjwal1/bert-mini)
+* [bert-base-cased](https://drive.google.com/file/d/10LiYqr8HL3Zhpy-k4izKlLh57ZjPz-w9/view?usp=sharing)
+* [prajjwal1/bert-medium](https://drive.google.com/file/d/1YPwFFUn_Grm6zq18GPmnlRH9dZnfS1_s/view?usp=sharing)
+* [prajjwal1/bert-small](https://drive.google.com/file/d/1v70e0ScMMfIZWyti4aS_ZTvNZEYk8s2M/view?usp=sharing)
+* [prajjwal1/bert-mini](https://drive.google.com/file/d/1tvUx31QC6WAjhdCjy_ZMZ6h_iEnI1REz/view?usp=sharing)
 
 ### CTDC
 
@@ -150,8 +150,8 @@ For CTDC, we have used the following models from HuggingFace:
 * [Seznam/small-e-czech](https://huggingface.co/Seznam/small-e-czech)
 
 Our trained versions are:
-* [UWB-AIR/Czert-B-base-cased](https://huggingface.co/UWB-AIR/Czert-B-base-cased)
-* [Seznam/small-e-czech](https://huggingface.co/Seznam/small-e-czech)
+* [UWB-AIR/Czert-B-base-cased](https://drive.google.com/file/d/19nGVbkb46XqqMy4Z7f3C881fTw8OgEKq/view?usp=sharing)
+* [Seznam/small-e-czech](https://drive.google.com/file/d/1wdubynicCkcAXr_zZUEODIM6dZOm0OE-/view?usp=sharing)
 
 
 # Notes
