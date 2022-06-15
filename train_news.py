@@ -51,9 +51,7 @@ def train(learning_rate, epochs, model):
         print(f'EPOCH: {epoch_num + 1}')
         iteration = 0
         model.train()
-        scheduler.step()
         for train_input, train_label in tqdm.tqdm(train_dataloader):
-            train_label = torch.unsqueeze(train_label, dim=-1)
             train_label = train_label.to(device)
             mask = torch.squeeze(train_input[1].to(device), dim=0)
             input_id = train_input[0].squeeze(1).to(device)
@@ -71,19 +69,21 @@ def train(learning_rate, epochs, model):
             optimizer.step()
             iteration += 1
 
-        writer.add_scalar('accuracy/train', train_metric.compute(), (epoch_num + 1) * len(train))
+        writer.add_scalar('f1/train', train_metric.compute(), (epoch_num + 1) * len(train))
         print(f'F1 TRAIN: {float(train_metric.compute())}')
         train_metric.reset()
-        model.eval()
-    torch.save(model, output_dir + f'/saved-model')
+        scheduler.step()
+
+    model.save_pretrained(output_dir)
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--epochs", default=4, help="Number of training epochs")
-parser.add_argument("--lr", default=1e-5, help="Learning rate")
+parser.add_argument("--epochs", default=4, help="Number of training epochs", type=int)
+parser.add_argument("--lr", default=1e-5, help="Learning rate", type=float)
 parser.add_argument("--model_name", default='UWB-AIR/Czert-B-base-cased', help="Pretrained model path")
-parser.add_argument("--batch_size", default=4, help="Batch size")
+parser.add_argument("--batch_size", default=1, help="Batch size", type=int)
 parser.add_argument("--output_dir", default='kfold-training-output', help="Output directory")
+parser.add_argument("--from_tf", default=False, help="If True, imported model is a TensorFlow model. Otherwise the imported model is a PyTorch model.")
 
 args = parser.parse_args()
 
@@ -92,7 +92,7 @@ LR = args.lr
 model_name = args.model_name
 batch_size = args.batch_size
 output_dir = args.output_dir
-
+from_tf = args.from_tf
 
 try:
     os.mkdir(output_dir)
@@ -100,7 +100,7 @@ except OSError:
     pass
 
 classes_dict = get_class_dict()
-model = transformers.BertForSequenceClassification.from_pretrained(model_name, num_labels=len(classes_dict), local_files_only=True)
+model = transformers.BertForSequenceClassification.from_pretrained(model_name, num_labels=len(classes_dict), from_tf=from_tf)
 tokenizer = transformers.AutoTokenizer.from_pretrained(model_name)
 
 train(LR, EPOCHS, model)

@@ -38,11 +38,7 @@ def get_fold_sizes(dataset_length, fold_count=5):
 
 def train(learning_rate, epochs):
     train = NewsDataset(get_file_text('datasets_ours/news/train.csv'), tokenizer, classes_dict)
-    # val = NewsDataset(get_file_text('datasets_ours/news/dev.csv'), tokenizer, classes_dict)
     kfold = KFold(n_splits=5, shuffle=True, random_state=42)
-
-    # train_dataloader = torch.utils.data.DataLoader(train, batch_size=batch_size, shuffle=True)
-    # val_dataloader = torch.utils.data.DataLoader(val, batch_size=batch_size)
 
     use_cuda = torch.cuda.is_available()
     device = torch.device("cuda" if use_cuda else "cpu")
@@ -73,7 +69,6 @@ def train(learning_rate, epochs):
 
         # metrics
         train_metric = torchmetrics.F1Score().to(device)
-        # writer = SummaryWriter(output_dir + '/logs')
 
         # cuda
         if use_cuda:
@@ -85,7 +80,6 @@ def train(learning_rate, epochs):
             print(f'EPOCH: {epoch_num + 1}')
             iteration = 0
             model.train()
-            scheduler.step()
             for train_input, train_label in tqdm.tqdm(trainloader):
                 train_label = train_label.to(device)
                 mask = torch.squeeze(train_input[1].to(device), dim=0)
@@ -96,7 +90,6 @@ def train(learning_rate, epochs):
                 with torch.autocast('cuda'):
                     batch_loss = criterion(output, train_label)
 
-                # writer.add_scalar('loss/train', float(batch_loss), epoch_num * len(train) + iteration)
                 train_metric(sigmoid(output), torch.tensor(train_label, dtype=torch.int32))
 
                 model.zero_grad()
@@ -104,10 +97,10 @@ def train(learning_rate, epochs):
                 optimizer.step()
                 iteration += 1
 
-            # writer.add_scalar('accuracy/train', train_metric.compute(), (epoch_num + 1) * len(train))
             print(f'F1 TRAIN: {float(train_metric.compute())}')
             train_metric.reset()
             model.eval()
+            scheduler.step()
 
             # eval only on the last epoch
             if epoch_num < epochs - 1:
@@ -135,11 +128,12 @@ def train(learning_rate, epochs):
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--epochs", default=4, help="Number of training epochs")
-parser.add_argument("--lr", default=1e-5, help="Learning rate")
+parser.add_argument("--epochs", default=4, help="Number of training epochs", type=int)
+parser.add_argument("--lr", default=1e-5, help="Learning rate", type=float)
 parser.add_argument("--model_name", default='UWB-AIR/Czert-B-base-cased', help="Pretrained model path")
-parser.add_argument("--batch_size", default=4, help="Batch size")
+parser.add_argument("--batch_size", default=1, help="Batch size", type=int)
 parser.add_argument("--output_dir", default='kfold-training-output', help="Output directory")
+parser.add_argument("--from_tf", default=False, help="If True, imported model is a TensorFlow model. Otherwise the imported model is a PyTorch model.")
 
 args = parser.parse_args()
 
@@ -148,6 +142,8 @@ LR = args.lr
 model_name = args.model_name
 batch_size = args.batch_size
 output_dir = args.output_dir
+from_tf = args.from_tf
+
 
 BASE_MODEL_PATH = 'basemodel'
 
@@ -157,7 +153,7 @@ except OSError:
     pass
 
 classes_dict = get_class_dict()
-model = transformers.BertForSequenceClassification.from_pretrained(model_name, num_labels=len(classes_dict), from_tf=True)
+model = transformers.BertForSequenceClassification.from_pretrained(model_name, num_labels=len(classes_dict), from_tf=from_tf)
 tokenizer = transformers.AutoTokenizer.from_pretrained(model_name)
 
 torch.save(model, BASE_MODEL_PATH)

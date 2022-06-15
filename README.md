@@ -5,7 +5,7 @@
 Our modified Stanford Sentiment Treebank is in <code>datasets_ours/sst</code>.
 There are three splits - <code>train.csv</code>, <code>test.tsv</code> and <code>dev.csv</code>. The preprocessed original files split into multiple <code>json</code> files.
 
-The PMI values for Czech Text Document Corpus are in <code>datasets_ours/news/PMI.csv</code>.
+The PMI values for Czech Text Document Corpus are in <code>datasets_ours/news/PMI.csv</code> and are a prt of this repository.
 The CTDC dataset can be downloaded from [here](http://ctdc.kiv.zcu.cz/).
 Then copy the <code>czech_text_document_corpus_v20</code> folder in the archive to <code>datasets_ours/news</code>.
 
@@ -39,7 +39,8 @@ python train_news_kfold.py \
   --epochs 4 \
   --lr 1e-5 \
   --batch_size 4 \
-  --output_dir output_kfold 
+  --output_dir output_kfold \
+  --from_tf True
 ```
 
 The training follows the same syntax:
@@ -49,7 +50,8 @@ python train_news.py \
   --epochs 4 \
   --lr 1e-5 \
   --batch_size 4 \
-  --output_dir Czert-B-base-cased-news
+  --output_dir Czert-B-base-cased-news \
+  --from_tf True
 ```
 
 ## Attributions
