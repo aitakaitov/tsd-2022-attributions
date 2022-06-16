@@ -64,14 +64,12 @@ in order to correctly merge the tokenized text into words. The medium, small and
 #### Baselines
 For the SST dataset attributions we need neutral baselines.
 Since this is a binary classification task, we can use gradients w.r.t. embeddings to generate neutral samples.
-This can take a while, so in case the gradients are too slow, random generation can be used. Scripts for generating baselines
-are in the <code>baselines</code> directory.
-
+This can take a while, so in case the gradients are too slow, random generation can be used.
 The usage is as follows:
 ```bash
-python generate_neutral_baselines_sst.py \
+python generate_neutral_baselines_sst.py \  # or generate_neutral_baselines_random_sst.py
   --tokenizer bert-base-cased \
-  --model_file bert-base-cased-sst/pytorch_model.bin \  # for example
+  --model_path bert-base-cased-sst \  # for example
   --output_dir baselines_bert-base-cased-sst
 ```
 
