@@ -3,10 +3,9 @@ import argparse
 import torch
 import json
 
-import transformers
 from transformers import AutoTokenizer
 from attribution_methods_custom import gradient_attributions, ig_attributions, sg_attributions
-from models.bert_512 import BertSequenceClassifierNews, RobertaSequenceClassifierNews, ElectraSequenceClassifierNews
+from models.bert_512 import BertSequenceClassifierNews, ElectraSequenceClassifierNews
 import numpy as np
 from BERT_explainability.modules.BERT.ExplanationGenerator import Generator
 
@@ -35,10 +34,6 @@ if 'small-e-czech' in MODEL_PATH:
     tokenizer = AutoTokenizer.from_pretrained('Seznam/small-e-czech')
     model = ElectraSequenceClassifierNews.from_pretrained(MODEL_PATH)
     embeddings = model.electra.base_model.embeddings.word_embeddings.weight.data
-elif 'robeczech' in MODEL_PATH:
-    tokenizer = AutoTokenizer.from_pretrained('ufal/robeczech-base')
-    model = RobertaSequenceClassifierNews.from_pretrained(MODEL_PATH)#RobertaSequenceClassifierNews.from_pretrained(MODEL_PATH)
-    embeddings = model.roberta.base_model.embeddings.word_embeddings.weight.data
 else:
     tokenizer = AutoTokenizer.from_pretrained('UWB-AIR/Czert-B-base-cased')
     model = BertSequenceClassifierNews.from_pretrained(MODEL_PATH)
@@ -353,7 +348,6 @@ def main():
 
     if 'czert' not in MODEL_PATH.lower():
         method_file_dict.pop('relprop')
-        method_file_dict.pop('relprop_x_gradients_sign')
 
     with open(OUTPUT_DIR + '/method_file_dict_custom.json', 'w+', encoding='utf-8') as f:
         f.write(json.dumps(method_file_dict))
