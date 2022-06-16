@@ -207,38 +207,17 @@ def create_smoothgrad_attributions(sentences, target_indices):
 
 def create_relprop_attributions(sentences, target_indices):
     attrs = []
-    attrs_x_inputs = []
     times = []
-    times_x_inputs = []
     for sentence, target_idx in zip(sentences, target_indices):
         input_ids, attention_mask = prepare_input_ids_and_attention_mask(sentence)
         inputs_embeds, _ = prepare_embeds_and_att_mask(sentence)
         start_time = perf_counter_ns()
         res = relprop_explainer.generate_LRP(input_ids=input_ids, attention_mask=attention_mask, start_layer=0, index=target_idx)
-        end_time = perf_counter_ns()
-        times.append(end_time - start_time)
+        times.append(perf_counter_ns() - start_time)
         attrs.append(format_attrs(res, sentence))
-        start_time2 = perf_counter_ns()
-        grads = gradient_attributions(inputs_embeds, attention_mask, target_idx, model)
-        grads = torch.sum(grads, dim=2)
-        grads = torch.sign(grads)
-        grads[grads == 0] = 1
-        res2 = res * torch.tensor(grads, dtype=torch.int)
-        end_time2 = perf_counter_ns()
-        attrs_x_inputs.append(format_attrs(res2, sentence))
-        times_x_inputs.append(end_time2 - start_time2 + end_time - start_time)
-
-        test = torch.abs(res2)
-        if not torch.equal(test, res):
-            print('not same')
-        else:
-            print('same')
 
     with open(OUTPUT_DIR + '/' + method_file_dict['relprop'], 'w+', encoding='utf-8') as f:
         f.write(json.dumps([attrs, float(np.average(times))]))
-
-    with open(OUTPUT_DIR + '/' + method_file_dict['relprop_x_gradients_sign'], 'w+', encoding='utf-8') as f:
-        f.write(json.dumps([attrs_x_inputs, float(np.average(times_x_inputs))]))
 
 
 #   -----------------------------------------------------------------------------------------------

@@ -278,43 +278,24 @@ def create_relprop_attributions(sentences, target_indices_list):
         return
 
     f = open(OUTPUT_DIR + '/' + method_file_dict['relprop'], 'w+', encoding='utf-8')
-    f_x_grads = open(OUTPUT_DIR + '/' + method_file_dict['relprop_x_gradients_sign'], 'w+', encoding='utf-8')
     f.write('[\n[\n')
-    f_x_grads.write('[\n[\n')
 
     times = []
-    times_x_grads = []
     for sentence, target_indices in zip(sentences, target_indices_list):
         input_ids, attention_mask = prepare_input_ids_and_attention_mask(sentence)
         inputs_embeds, _ = prepare_embeds_and_att_mask(sentence)
         temp_attrs = []
-        temp_attrs_x_grads = []
         for target_idx in target_indices:
             start_time = perf_counter_ns()
             res = relprop_explainer.generate_LRP(input_ids=input_ids, attention_mask=attention_mask, start_layer=0, index=target_idx)
-            end_time = perf_counter_ns()
-            times.append(end_time - start_time)
+            times.append(perf_counter_ns() - start_time)
             temp_attrs.append(format_attrs(res, sentence))
-            start_time2 = perf_counter_ns()
-            grads = gradient_attributions(inputs_embeds, attention_mask, target_idx, model)
-            grads = torch.sum(grads, dim=2)
-            grads = torch.sign(grads)
-            grads[grads == 0] = 1
-            res2 = res * torch.tensor(grads, dtype=torch.int)
-            end_time2 = perf_counter_ns()
-            temp_attrs_x_grads.append(format_attrs(res2, sentence))
-            times_x_grads.append(end_time2 - start_time2 + end_time - start_time)
 
         f.write(json.dumps(temp_attrs) + ',')
-        f_x_grads.write(json.dumps(temp_attrs_x_grads) + ',')
 
     f.seek(f.tell() - 1)
     f.write('\n]\n,' + json.dumps(float(np.average(times))) + '\n]\n')
     f.close()
-
-    f_x_grads.seek(f_x_grads.tell() - 1)
-    f_x_grads.write('\n]\n,' + json.dumps(float(np.average(times))) + '\n]\n')
-    f_x_grads.close()
 
 #   -----------------------------------------------------------------------------------------------
 
@@ -358,7 +339,6 @@ def main():
 
     if 'czert' in MODEL_PATH.lower():
         create_relprop_attributions(valid_documents, target_indices)
-
 
 
 if __name__ == '__main__':
