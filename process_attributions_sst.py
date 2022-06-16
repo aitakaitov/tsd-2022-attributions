@@ -102,12 +102,11 @@ def generate_random_attrs(method_file_dict):
     with open(random_file, 'w+', encoding='utf-8') as f:
         f.write(json.dumps(res))
 
-    method_file_dict['random'] = 'attrs/random.json'
+    method_file_dict['random'] = 'random.json'
 
 
 def get_short_sample_indices(sst_bert_tokens):
     sst_tokens = sst_bert_tokens['sst_tokens']
-    print(len(sst_tokens))
     indices = []
     for i in range(len(sst_tokens)):
         if len(sst_tokens[i]) < MINIMAL_TOKEN_COUNT:

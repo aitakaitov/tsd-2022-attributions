@@ -84,7 +84,7 @@ The script <code>create_attributions_sst.py</code> generates attributions for th
 The usage is as follows:
 ```bash
 python create_attributions_sst.py \
-  --baselines_directory baselines_czert \
+  --baselines_dir baselines_czert \
   --model_path bert-base-cased-sst \  # for example
   --output_dir bert-base-cased-sst-attrs 
 ```

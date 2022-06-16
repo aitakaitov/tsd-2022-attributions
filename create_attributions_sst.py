@@ -15,13 +15,13 @@ device = 'cuda' if torch.cuda.is_available() else 'cpu'
 parser = argparse.ArgumentParser()
 parser.add_argument('--output_dir', default='output_sst_attrs', help='Attributions output directory')
 parser.add_argument('--model_path', required=True, help='Trained model')
-parser.add_argument('--baselines_directory', required=True, help='Directory with baseline examples')
+parser.add_argument('--baselines_dir', required=True, help='Directory with baseline examples')
 
 args = parser.parse_args()
 
 OUTPUT_DIR = args.output_dir
-MODEL_PATH = parser.model_path
-BASELINES_DIR = parser.baselines_directory
+MODEL_PATH = args.model_path
+BASELINES_DIR = args.baselines_dir
 
 try:
     os.mkdir(OUTPUT_DIR)
