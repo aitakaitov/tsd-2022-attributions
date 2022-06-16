@@ -75,6 +75,10 @@ python generate_neutral_baselines_sst.py \  # or generate_neutral_baselines_rand
 
 The syntax is the same for random generation.
 
+The baselines we have used are available [here](https://drive.google.com/file/d/1264QRfPhWkm7_dx9hmRRXFRykdiTeKRp/view?usp=sharing). 
+The archive contains folders with baseline embeddings for each of the four models we have trained 
+for the SST attributions.
+
 #### Attributions generation
 The script <code>create_attributions_sst.py</code> generates attributions for the SST dataset.
 The usage is as follows:
